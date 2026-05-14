@@ -581,37 +581,12 @@ function CurrencyTab() {
 
 // ─── INSTALL BUTTON ───────────────────────────────────────────────────────────
 function InstallButton() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showTooltip, setShowTooltip]       = useState(false);
-  const [installed, setInstalled]           = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem("pwa-installed")) { setInstalled(true); return; }
-    if (window.__installPrompt) setDeferredPrompt(window.__installPrompt);
-    const handler = e => { e.preventDefault(); setDeferredPrompt(e); window.__installPrompt = e; };
-    window.addEventListener("beforeinstallprompt", handler);
-    window.addEventListener("appinstalled", () => { setInstalled(true); localStorage.setItem("pwa-installed", "1"); });
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
-
-  if (installed) return null;
-
-  const handleClick = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") { setInstalled(true); localStorage.setItem("pwa-installed", "1"); }
-      setDeferredPrompt(null);
-    } else {
-      setShowTooltip(t => !t);
-    }
-  };
-
+  const [showTooltip, setShowTooltip] = useState(false);
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
-      <button onClick={handleClick} style={{
+      <button onClick={() => setShowTooltip(t => !t)} style={{
         background: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.2)",
         borderRadius: "20px", padding: "6px 14px", cursor: "pointer",
         fontFamily: F, fontSize: "12px", fontWeight: "700", color: "#ffffff",
