@@ -1,4 +1,4 @@
-const CACHE = "bontip-v1";
+const CACHE = "bontip-v2";
 const ASSETS = ["/", "/index.html"];
 
 self.addEventListener("install", e => {
