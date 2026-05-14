@@ -579,6 +579,66 @@ function CurrencyTab() {
   );
 }
 
+// ─── INSTALL BUTTON ───────────────────────────────────────────────────────────
+function InstallButton() {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showTooltip, setShowTooltip]       = useState(false);
+  const [installed, setInstalled]           = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("pwa-installed")) { setInstalled(true); return; }
+    const handler = e => { e.preventDefault(); setDeferredPrompt(e); };
+    window.addEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", () => { setInstalled(true); localStorage.setItem("pwa-installed", "1"); });
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  if (installed) return null;
+
+  const handleClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") { setInstalled(true); localStorage.setItem("pwa-installed", "1"); }
+      setDeferredPrompt(null);
+    } else {
+      setShowTooltip(t => !t);
+    }
+  };
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  return (
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <button onClick={handleClick} style={{
+        background: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.2)",
+        borderRadius: "20px", padding: "6px 14px", cursor: "pointer",
+        fontFamily: F, fontSize: "12px", fontWeight: "700", color: "#ffffff",
+        display: "flex", alignItems: "center", gap: "6px",
+      }}>
+        📲 Add to Home Screen
+      </button>
+      {showTooltip && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)",
+          background: "#2d1b69", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: "12px",
+          padding: "10px 14px", width: "220px", zIndex: 100,
+          fontFamily: F, fontSize: "12px", color: "#ffffff", fontWeight: "500", lineHeight: 1.5,
+          boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+        }}>
+          {isIOS
+            ? "Tap the Share button (□↑) in Safari, then tap \"Add to Home Screen\""
+            : "Tap your browser menu (⋮) and select \"Add to Home Screen\""}
+          <button onClick={() => setShowTooltip(false)} style={{
+            display: "block", marginTop: "8px", background: "none", border: "none",
+            color: "#FF6B9D", fontFamily: F, fontSize: "11px", fontWeight: "700", cursor: "pointer", padding: 0,
+          }}>Got it ✕</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [tab, setTab]                         = useState(0);
@@ -610,6 +670,9 @@ export default function App() {
           </div>
           <div style={{ fontFamily: F, fontSize: "13px", color: "#9985cc", marginTop: "6px", fontWeight: "600" }}>
             split it. tip it. done ✨
+          </div>
+          <div style={{ marginTop: "12px" }}>
+            <InstallButton />
           </div>
         </div>
 
