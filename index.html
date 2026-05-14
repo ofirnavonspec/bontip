@@ -6,9 +6,20 @@
     <meta name="description" content="BonTip — free tip calculator and bill splitter with live currency converter. Perfect for restaurants and travelers." />
     <title>BonTip — Tip Calculator & Bill Splitter</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#1a1035" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="BonTip" />
+    <link rel="apple-touch-icon" href="/icon-192.svg" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+      }
+    </script>
   </body>
 </html>
