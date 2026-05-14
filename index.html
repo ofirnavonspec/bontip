@@ -34,6 +34,10 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        window.__installPrompt = e;
+      });
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
       }

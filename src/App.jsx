@@ -587,7 +587,8 @@ function InstallButton() {
 
   useEffect(() => {
     if (localStorage.getItem("pwa-installed")) { setInstalled(true); return; }
-    const handler = e => { e.preventDefault(); setDeferredPrompt(e); };
+    if (window.__installPrompt) setDeferredPrompt(window.__installPrompt);
+    const handler = e => { e.preventDefault(); setDeferredPrompt(e); window.__installPrompt = e; };
     window.addEventListener("beforeinstallprompt", handler);
     window.addEventListener("appinstalled", () => { setInstalled(true); localStorage.setItem("pwa-installed", "1"); });
     return () => window.removeEventListener("beforeinstallprompt", handler);
