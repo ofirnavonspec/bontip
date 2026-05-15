@@ -292,18 +292,18 @@ function CalculatorTab({ currency }) {
                         <input
                           value={s.label}
                           onChange={e => setShares(prev => prev.map((x, idx) => idx === i ? { ...x, label: e.target.value } : x))}
-                          style={{ flex: 1, padding: "6px 10px", borderRadius: "8px", border: "2px solid #e8e0f5", background: "#fff", fontFamily: F, fontSize: "13px", fontWeight: "600", color: "#1a1035", outline: "none" }}
+                          style={{ flex: 1, minWidth: 0, padding: "6px 10px", borderRadius: "8px", border: "2px solid #e8e0f5", background: "#fff", fontFamily: F, fontSize: "13px", fontWeight: "600", color: "#1a1035", outline: "none" }}
                         />
                         {/* % / $ pill */}
-                        <div style={{ display: "flex", background: "#fff", borderRadius: "8px", border: "2px solid #e8e0f5", overflow: "hidden", flexShrink: 0 }}>
+                        <div style={{ display: "flex", background: "#fff", borderRadius: "8px", border: "2px solid #e8e0f5", overflow: "hidden", flexShrink: 0, fontSize: "11px" }}>
                           <button onClick={() => s.useFixed && toggleFixed(i)} style={{
-                            padding: "6px 12px", border: "none",
+                            padding: "6px 10px", border: "none",
                             background: !s.useFixed ? col.bg : "transparent",
                             color: !s.useFixed ? "#fff" : "#9985cc",
                             fontFamily: F, fontSize: "11px", fontWeight: "800", cursor: s.useFixed ? "pointer" : "default",
                           }}>%</button>
                           <button onClick={() => !s.useFixed && toggleFixed(i)} style={{
-                            padding: "6px 12px", border: "none",
+                            padding: "6px 10px", border: "none",
                             background: s.useFixed ? col.bg : "transparent",
                             color: s.useFixed ? "#fff" : "#9985cc",
                             fontFamily: F, fontSize: "11px", fontWeight: "800", cursor: !s.useFixed ? "pointer" : "default",
@@ -315,13 +315,12 @@ function CalculatorTab({ currency }) {
                       {s.useFixed ? (
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                            <span style={{ fontFamily: F, fontSize: "20px", color: col.bg, fontWeight: "800" }}>{sym}</span>
+                            <span style={{ fontFamily: F, fontSize: "18px", color: col.bg, fontWeight: "800", flexShrink: 0 }}>{sym}</span>
                             <input
                               type="number" value={s.fixedAmt} placeholder="Enter amount…"
                               onChange={e => setShares(prev => prev.map((x, idx) => idx === i ? { ...x, fixedAmt: e.target.value } : x))}
-                              style={{ flex: 1, border: "none", background: "transparent", fontFamily: F, fontSize: "18px", fontWeight: "700", color: "#1a1035", outline: "none" }}
+                              style={{ flex: 1, minWidth: 0, border: "none", background: "transparent", fontFamily: F, fontSize: "18px", fontWeight: "700", color: "#1a1035", outline: "none" }}
                             />
-                            <span style={{ fontFamily: F, fontSize: "10px", color: "#fff", fontWeight: "800", background: col.bg, padding: "3px 7px", borderRadius: "6px" }}>FIXED</span>
                           </div>
                           {/* Tip include/exclude toggle */}
                           <div style={{ display: "flex", background: "#fff", borderRadius: "8px", border: "1px solid #e8e0f5", overflow: "hidden" }}>
@@ -500,12 +499,7 @@ function CurrencyTab() {
       setRates(data.rates);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch {
-      setError("Could not fetch live rates. Showing approximate values.");
-      const fallback = { USD:1, EUR:0.92, GBP:0.79, ILS:3.7, CAD:1.36, AUD:1.53, JPY:149, MXN:17.2, CHF:0.89, INR:83.2 };
-      const base = fallback[from] || 1;
-      const r = {};
-      CURRENCIES.filter(c => c.code !== from).forEach(c => { r[c.code] = parseFloat((fallback[c.code] / base).toFixed(4)); });
-      setRates(r);
+      setError("Could not fetch live rates. Please check your connection and tap ↻ to retry.");
     }
     setLoading(false);
   }, [from]);
