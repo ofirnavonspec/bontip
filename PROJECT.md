@@ -25,7 +25,7 @@ Monetization: Google AdSense (display ads). Simple, high-repeat-use utility = go
 - **React** (functional components + hooks)
 - **Vite** as the build tool
 - **No external UI libraries** — all styling is inline React styles
-- **Frankfurter API** (free, no key needed) for live currency rates: `https://api.frankfurter.app`
+- **Frankfurter API** (free, no key needed) for live currency rates: `https://api.frankfurter.dev/v1/`
 - Font: **Plus Jakarta Sans** from Google Fonts
 - **PWA** — installable on Android and iPhone via "Add to Home Screen"
 

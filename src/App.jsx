@@ -499,7 +499,7 @@ function CurrencyTab() {
     setError(null);
     try {
       const targets = CURRENCIES.filter(c => c.code !== from).map(c => c.code).join(",");
-      const res  = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${targets}`);
+      const res  = await fetch(`https://api.frankfurter.dev/v1/latest?from=${from}&to=${targets}`);
       if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       setRates(data.rates);
