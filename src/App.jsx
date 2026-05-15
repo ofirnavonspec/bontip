@@ -165,7 +165,11 @@ function CalculatorTab({ currency }) {
   };
 
   const toggleFixed = i => {
-    setShares(prev => rebalanceFree(prev.map((s, idx) => idx === i ? { ...s, useFixed: !s.useFixed, fixedAmt: "", fixedExcludesTip: false } : s)));
+    setShares(prev => {
+      const freeCount = prev.filter(s => !s.useFixed).length;
+      if (!prev[i].useFixed && freeCount <= 1) return prev;
+      return rebalanceFree(prev.map((s, idx) => idx === i ? { ...s, useFixed: !s.useFixed, fixedAmt: "", fixedExcludesTip: false } : s));
+    });
   };
 
   const toggleFixedExcludesTip = i => {
@@ -285,6 +289,7 @@ function CalculatorTab({ currency }) {
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 {shares.map((s, i) => {
                   const col = pc(i);
+                  const isLastFree = !s.useFixed && shares.filter(x => !x.useFixed).length <= 1;
                   return (
                     <div key={i} style={{ background: s.useFixed ? col.light : "#f3effb", borderRadius: "16px", border: `2px solid ${s.useFixed ? col.bg : "#e8e0f5"}`, padding: "12px 14px" }}>
                       {/* Name + mode toggle */}
@@ -305,6 +310,7 @@ function CalculatorTab({ currency }) {
                           <button onClick={() => !s.useFixed && toggleFixed(i)} style={{
                             padding: "6px 10px", border: "none",
                             background: s.useFixed ? col.bg : "transparent",
+                            opacity: isLastFree ? 0.35 : 1,
                             color: s.useFixed ? "#fff" : "#9985cc",
                             fontFamily: F, fontSize: "11px", fontWeight: "800", cursor: !s.useFixed ? "pointer" : "default",
                           }}>{sym}</button>
