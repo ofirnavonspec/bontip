@@ -579,6 +579,33 @@ function CurrencyTab() {
   );
 }
 
+// ─── SHARE BUTTON ─────────────────────────────────────────────────────────────
+function ShareButton() {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = { title: "BonTip", text: "Free tip calculator & bill splitter", url: "https://bontip.app" };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch {}
+    } else {
+      await navigator.clipboard.writeText("https://bontip.app");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <button onClick={handleShare} style={{
+      background: "rgba(255,255,255,0.1)", border: "1.5px solid rgba(255,255,255,0.2)",
+      borderRadius: "20px", padding: "6px 14px", cursor: "pointer",
+      fontFamily: F, fontSize: "12px", fontWeight: "700", color: "#ffffff",
+      display: "flex", alignItems: "center", gap: "6px", transition: "all 0.2s",
+    }}>
+      {copied ? "✓ Copied!" : "🔗 Share App"}
+    </button>
+  );
+}
+
 // ─── INSTALL BUTTON ───────────────────────────────────────────────────────────
 function InstallButton() {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -647,8 +674,9 @@ export default function App() {
           <div style={{ fontFamily: F, fontSize: "13px", color: "#9985cc", marginTop: "6px", fontWeight: "600" }}>
             split it. tip it. done ✨
           </div>
-          <div style={{ marginTop: "12px" }}>
+          <div style={{ marginTop: "12px", display: "flex", gap: "8px", justifyContent: "center" }}>
             <InstallButton />
+            <ShareButton />
           </div>
         </div>
 
