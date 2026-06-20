@@ -136,16 +136,18 @@ function CalculatorTab({ currency }) {
       const newVal = parseFloat(val);
       if (isNaN(newVal)) return prev;
       const oldVal = parseFloat(prev[i].pct) || 0;
-      const diff   = oldVal - newVal;
       const freeIdxs = prev.map((s, idx) => (!s.useFixed ? idx : -1)).filter(x => x >= 0);
       const myPos    = freeIdxs.indexOf(i);
       if (myPos === -1) return prev;
       const neighborPos = myPos < freeIdxs.length - 1 ? myPos + 1 : 0;
       const neighborIdx = freeIdxs[neighborPos];
-      if (neighborIdx === i) return prev.map((s, idx) => idx === i ? { ...s, pct: parseFloat(newVal.toFixed(4)) } : s);
-      const neighborNew = parseFloat(((parseFloat(prev[neighborIdx].pct) || 0) + diff).toFixed(4));
+      if (neighborIdx === i) return prev.map((s, idx) => idx === i ? { ...s, pct: parseFloat(Math.max(0, Math.min(100, newVal)).toFixed(4)) } : s);
+      const neighborOld = parseFloat(prev[neighborIdx].pct) || 0;
+      const pairSum     = oldVal + neighborOld;
+      const clamped     = parseFloat(Math.max(0, Math.min(pairSum, newVal)).toFixed(4));
+      const neighborNew = parseFloat((pairSum - clamped).toFixed(4));
       return prev.map((s, idx) => {
-        if (idx === i)          return { ...s, pct: parseFloat(newVal.toFixed(4)) };
+        if (idx === i)           return { ...s, pct: clamped };
         if (idx === neighborIdx) return { ...s, pct: neighborNew };
         return s;
       });
