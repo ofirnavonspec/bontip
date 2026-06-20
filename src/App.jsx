@@ -127,6 +127,7 @@ function CalculatorTab({ currency }) {
   })();
 
   const fixedTotalSum = resolvedShares.filter((_, i) => shares[i].useFixed).reduce((s, x) => s + x.amt, 0);
+  const anyFixed      = shares.some(x => x.useFixed);
   const overBudget    = fixedTotalSum > total + 0.01;
   const totalResolved = resolvedShares.reduce((s, x) => s + x.amt, 0);
   const shareValid    = !overBudget && Math.abs(totalResolved - total) < 0.5;
@@ -360,7 +361,6 @@ function CalculatorTab({ currency }) {
                             </div>
                             <div style={{ fontFamily: F, fontSize: "10px", color: "#9985cc", marginTop: "1px", fontWeight: "600" }}>
                               {(() => {
-                                const anyFixed = shares.some(x => x.useFixed);
                                 const remainder = Math.max(0, total - fixedTotalSum);
                                 if (anyFixed && remainder > 0 && resolvedShares[i]) {
                                   return `${(resolvedShares[i].amt / remainder * 100).toFixed(1)}% of remainder`;
@@ -369,10 +369,12 @@ function CalculatorTab({ currency }) {
                               })()}
                             </div>
                           </div>
-                          <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                            <button onClick={() => updatePct(i, Math.max(0, parseFloat(s.pct || 0) + 1).toString())} style={{ background: "none", border: "1px solid #e8e0f5", borderRadius: "5px", width: "26px", height: "24px", cursor: "pointer", color: "#9985cc", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
-                            <button onClick={() => updatePct(i, Math.max(0, parseFloat(s.pct || 0) - 1).toString())} style={{ background: "none", border: "1px solid #e8e0f5", borderRadius: "5px", width: "26px", height: "24px", cursor: "pointer", color: "#9985cc", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-                          </div>
+                          {!anyFixed && (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                              <button onClick={() => updatePct(i, Math.max(0, parseFloat(s.pct || 0) + 1).toString())} style={{ background: "none", border: "1px solid #e8e0f5", borderRadius: "5px", width: "26px", height: "24px", cursor: "pointer", color: "#9985cc", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                              <button onClick={() => updatePct(i, Math.max(0, parseFloat(s.pct || 0) - 1).toString())} style={{ background: "none", border: "1px solid #e8e0f5", borderRadius: "5px", width: "26px", height: "24px", cursor: "pointer", color: "#9985cc", fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -452,7 +454,6 @@ function CalculatorTab({ currency }) {
                         <div style={{ fontFamily: F, fontSize: "26px", fontWeight: "900" }}>{fmt(r.amt, sym, code)}</div>
                         <div style={{ fontFamily: F, fontSize: "10px", opacity: 0.75, marginTop: "2px", fontWeight: "700" }}>
                           {(() => {
-                            const anyFixed  = shares.some(x => x.useFixed);
                             const remainder = Math.max(0, total - fixedTotalSum);
                             if (!s.useFixed && anyFixed && remainder > 0) {
                               return `${(r.amt / remainder * 100).toFixed(1)}% of remainder`;
